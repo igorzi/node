@@ -492,12 +492,19 @@ void fs__readdir(uv_fs_t* req, const wchar_t* path, int flags) {
 void fs__stat(uv_fs_t* req, const wchar_t* path) {
   int result;
 
-  result = _wstati64(path, &req->stat);
+  fs__open(req, path, _O_RDONLY, 0);
+  if (req->result == -1) {
+    return;
+  }
+
+  result = _fstati64(req->result, &req->stat);
   if (result == -1) {
     req->ptr = NULL;
   } else {
     req->ptr = &req->stat;
   }
+
+  _close(req->result);
 
   SET_REQ_RESULT(req, result);
 }
