@@ -132,7 +132,6 @@
         ],
       }, {
         'defines': [
-          '_LARGEFILE_SOURCE',
           '_FILE_OFFSET_BITS=64',
         ],
       }],
