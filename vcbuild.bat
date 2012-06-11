@@ -28,6 +28,8 @@ set msi=
 set licensertf=
 set upload=
 set jslint=
+set noetw=
+set noetw_arg=
 
 :next-arg
 if "%1"=="" goto args-done
@@ -41,6 +43,7 @@ if /i "%1"=="noprojgen"     set noprojgen=1&goto arg-ok
 if /i "%1"=="nobuild"       set nobuild=1&goto arg-ok
 if /i "%1"=="nosign"        set nosign=1&goto arg-ok
 if /i "%1"=="nosnapshot"    set nosnapshot=1&goto arg-ok
+if /i "%1"=="noetw"         set noetw=1&goto arg-ok
 if /i "%1"=="licensertf"    set licensertf=1&goto arg-ok
 if /i "%1"=="test-uv"       set test=test-uv&goto arg-ok
 if /i "%1"=="test-internet" set test=test-internet&goto arg-ok
@@ -65,13 +68,14 @@ if defined jslint goto jslint
 if "%config%"=="Debug" set debug_arg=--debug
 if "%target_arch%"=="x64" set msiplatform=x64
 if defined nosnapshot set nosnapshot_arg=--without-snapshot
+if defined noetw set noetw_arg=--without-etw
 
 :project-gen
 @rem Skip project generation if requested.
 if defined noprojgen goto msbuild
 
 @rem Generate the VS project.
-python configure %debug_arg% %nosnapshot_arg% --dest-cpu=%target_arch%
+python configure %debug_arg% %nosnapshot_arg% %noetw_arg% --dest-cpu=%target_arch%
 if errorlevel 1 goto create-msvs-files-failed
 if not exist node.sln goto create-msvs-files-failed
 echo Project files generated.
