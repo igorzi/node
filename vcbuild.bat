@@ -30,6 +30,7 @@ set upload=
 set jslint=
 set noetw=
 set noetw_arg=
+set noetw_msi_arg=
 
 :next-arg
 if "%1"=="" goto args-done
@@ -68,7 +69,7 @@ if defined jslint goto jslint
 if "%config%"=="Debug" set debug_arg=--debug
 if "%target_arch%"=="x64" set msiplatform=x64
 if defined nosnapshot set nosnapshot_arg=--without-snapshot
-if defined noetw set noetw_arg=--without-etw
+if defined noetw set noetw_arg=--without-etw& set noetw_msi_arg=/p:NoETW=1
 
 :project-gen
 @rem Skip project generation if requested.
@@ -120,7 +121,7 @@ if not defined msi goto run
 python "%~dp0tools\getnodeversion.py" > "%temp%\node_version.txt"
 if not errorlevel 0 echo Cannot determine current version of node.js & goto exit
 for /F "tokens=*" %%i in (%temp%\node_version.txt) do set NODE_VERSION=%%i
-msbuild "%~dp0tools\msvs\msi\nodemsi.sln" /m /t:Clean,Build /p:Configuration=%config% /p:Platform=%msiplatform% /p:NodeVersion=%NODE_VERSION% /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo
+msbuild "%~dp0tools\msvs\msi\nodemsi.sln" /m /t:Clean,Build /p:Configuration=%config% /p:Platform=%msiplatform% /p:NodeVersion=%NODE_VERSION% %noetw_msi_arg% /clp:NoSummary;NoItemAndPropertyList;Verbosity=minimal /nologo
 if errorlevel 1 goto exit
 
 if defined nosign goto run

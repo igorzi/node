@@ -32,7 +32,7 @@ REGHANDLE node_provider;
 EventRegisterFunc event_register;
 EventUnregisterFunc event_unregister;
 EventWriteFunc event_write;
-volatile int events_enabled;
+int events_enabled;
 
 // This callback is called by ETW when consumers of our provider
 // are enabled or disabled.
@@ -81,11 +81,11 @@ void shutdown_etw() {
     node_provider = 0;
   }
 
+  events_enabled = 0;
+
   if (advapi) {
     FreeLibrary(advapi);
     advapi = NULL;
   }
-
-  events_enabled = 0;
 }
 }

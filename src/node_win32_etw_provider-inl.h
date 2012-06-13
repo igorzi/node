@@ -32,7 +32,7 @@ using namespace v8;
 // From node_win32_etw_provider.cc
 extern REGHANDLE node_provider;
 extern EventWriteFunc event_write;
-extern volatile int events_enabled;
+extern int events_enabled;
 
 #define ETW_WRITE_STRING_DATA(data_descriptor, data)                          \
   EventDataDescCreate(data_descriptor,                                        \
